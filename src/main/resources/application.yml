@@ -1,0 +1,41 @@
+server.port: 8080
+#trace: true
+
+spring:
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:~/db1
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  jpa:
+    open-in-view: false
+    hibernate:
+      jdbc:
+        batch_size: 500
+      ddl-auto: create
+    show-sql: true
+    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+  profiles:
+    active: dev
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+
+  main:
+    allow-bean-definition-overriding: true
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  show-actuator: true
+management:
+  endpoints:
+    shutdown:
+      enabled: true
+    health:
+      group:
+        custom:
+        show-components: always
+        show-details: always
