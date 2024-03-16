@@ -9,13 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +34,7 @@ public class PersonController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Person> delete(Long id) {
+    public ResponseEntity<Person> delete(@PathVariable Long id) {
         personRepository.deleteById(id);
         return ResponseEntity.accepted().build();
     }
@@ -83,6 +77,38 @@ public class PersonController {
             personRepository.save(entity);
             return ResponseEntity.ok(entity.getId());
         }
-
     }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Person> updateNew(@PathVariable Long id, @RequestBody Person updatedPerson) {
+        Optional<PersonEntity> optionalPersonEntity = personRepository.findById(id);
+        if (optionalPersonEntity.isPresent()) {
+            PersonEntity personEntity = optionalPersonEntity.get();
+
+            if (updatedPerson.getGender() != null) {
+                personEntity.setGender(updatedPerson.getGender());
+            }
+            if (updatedPerson.getFirstName() != null) {
+                personEntity.setFirstName(updatedPerson.getFirstName());
+            }
+            if (updatedPerson.getLastName() != null) {
+                personEntity.setLastName(updatedPerson.getLastName());
+            }
+            if (updatedPerson.getEmail() != null) {
+                personEntity.setEmail(updatedPerson.getEmail());
+            }
+            if (updatedPerson.getAvatar() != null) {
+                personEntity.setAvatar(updatedPerson.getAvatar());
+            }
+            if (updatedPerson.getCompany() != null) {
+                personEntity.setCompany(updatedPerson.getCompany());
+            }
+
+            personRepository.save(personEntity);
+            return ResponseEntity.ok(mapper.getModel(personEntity));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
+
